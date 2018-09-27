@@ -6,3 +6,5 @@ __pycache__
 __pycache__/
 *.jpg
 .DS_Store
+src/db.sqlite3
+db.sqlite3
