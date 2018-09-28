@@ -5,6 +5,7 @@ env3
 __pycache__
 __pycache__/
 *.jpg
+*.png
 .DS_Store
 src/db.sqlite3
 db.sqlite3
