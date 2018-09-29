@@ -4,6 +4,9 @@ from django.contrib.auth.decorators import login_required
 from .forms import LoginForm
 
 def auth_view(request):
+    if request.user.is_authenticated:
+        return redirect('posts:feed')
+
     form = LoginForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
