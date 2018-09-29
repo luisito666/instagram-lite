@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 posts = [
@@ -32,6 +34,7 @@ posts = [
     }
 ]
 
+@login_required
 def list_post(request):
     """
     """
