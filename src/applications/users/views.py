@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from .models import Profile
 
 # Formularios
-from .forms import LoginForm
+from .forms import LoginForm, ProfileForm
 
 # Exceptions
 from django.db.utils import IntegrityError
@@ -18,20 +18,19 @@ def auth_view(request):
         return redirect('posts:feed')
 
     form = LoginForm(request.POST or None)
-    if request.method == 'POST':
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-
-            user = authenticate(request, username=username, password=password)
-            if user:
-                login(request, user)
-                return redirect('posts:feed')
-            else:
-                form = LoginForm()
-                return render(request, 'users/login.html', {'message': 'invalid username or password', 'form': form})
+    if form.is_valid():
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect('posts:feed')
         else:
-            return render(request, 'users/login.html', {'form': form})
+            form = LoginForm()
+            return render(request, 'users/login.html', {'message': 'invalid username or password', 'form': form})
+    else:
+        return render(request, 'users/login.html', {'form': form})
 
     return render(request, 'users/login.html', {'form': form})
 
@@ -69,5 +68,22 @@ def signup_view(request):
     return render(request, 'users/signup.html')
 
 def update_profile(request):
-    return render(request, 'users/update_profile.html')
+    form = ProfileForm(request.POST or None, request.FILES or None)
+    profile = request.user.profile
+
+    if form.is_valid():
+        profile.website = form.cleaned_data['website']
+        profile.phone_number = form.cleaned_data['phone_number']
+        profile.biography = form.cleaned_data['biography']
+        profile.picture = form.cleaned_data['picture']
+        profile.save()
+        
+        return redirect('users:update_profile')
+
+    context = {
+        'profile': profile,
+        'user': request.user,
+        'form': form
+    }
+    return render(request, 'users/update_profile.html', context)
 
