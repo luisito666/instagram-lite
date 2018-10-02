@@ -15,7 +15,7 @@ from django.db.utils import IntegrityError
 
 def auth_view(request):
     if request.user.is_authenticated:
-        return redirect('posts:feed')
+        return redirect('feed')
 
     form = LoginForm(request.POST or None)
     if form.is_valid():
@@ -25,7 +25,7 @@ def auth_view(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect('posts:feed')
+            return redirect('feed')
         else:
             form = LoginForm()
             return render(request, 'users/login.html', {'message': 'invalid username or password', 'form': form})
@@ -67,6 +67,7 @@ def signup_view(request):
 
     return render(request, 'users/signup.html')
 
+@login_required
 def update_profile(request):
     form = ProfileForm(request.POST or None, request.FILES or None)
     profile = request.user.profile

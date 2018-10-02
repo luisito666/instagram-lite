@@ -2,5 +2,6 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
-    path('', views.list_post, name='feed' ),
+    path('new', views.create_post, name='create_post' ),
+    #path('', views.list_post, name='feed' ),
 ] 
