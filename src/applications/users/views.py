@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from .models import Profile
 
 # Formularios
-from .forms import LoginForm, ProfileForm
+from .forms import LoginForm, ProfileForm, SignupForm
 
 # Exceptions
 from django.db.utils import IntegrityError
@@ -42,6 +42,15 @@ def logout_view(request):
 
 
 def signup_view(request):
+    form = SignupForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('users:login')
+
+    return render(request, 'users/signup.html', {'form': form})
+
+
+def signup_view_old(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
