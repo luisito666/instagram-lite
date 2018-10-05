@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView, DeleteView
+from django.views.generic import TemplateView, DetailView
 from django.urls import reverse
 
 # Modelos
@@ -104,7 +104,7 @@ def update_profile(request):
     return render(request, 'users/update_profile.html', context)
 
 
-class UserDetailView(LoginRequiredMixin, DeleteView):
+class UserDetailView(LoginRequiredMixin, DetailView):
     """
     """
     queryset = User.objects.all()
