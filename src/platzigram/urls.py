@@ -17,11 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from applications.posts.views import list_post
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', list_post, name='feed'),
-    path('posts/', include(('applications.posts.urls', 'posts'), namespace='posts')),
+    path('', include(('applications.posts.urls', 'posts'), namespace='posts')),
     path('users/', include(('applications.users.urls', 'users'), namespace='users')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

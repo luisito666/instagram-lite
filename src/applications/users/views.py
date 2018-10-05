@@ -1,11 +1,16 @@
 # django Imports
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.views.generic import TemplateView, DeleteView
+from django.urls import reverse
 
 # Modelos
 from django.contrib.auth.models import User
 from .models import Profile
+from applications.posts.models import Post
 
 # Formularios
 from .forms import LoginForm, ProfileForm, SignupForm
@@ -15,7 +20,7 @@ from django.db.utils import IntegrityError
 
 def auth_view(request):
     if request.user.is_authenticated:
-        return redirect('feed')
+        return redirect('posts:feed')
 
     form = LoginForm(request.POST or None)
     if form.is_valid():
@@ -25,7 +30,7 @@ def auth_view(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect('feed')
+            return redirect('posts:feed')
         else:
             form = LoginForm()
             return render(request, 'users/login.html', {'message': 'invalid username or password', 'form': form})
@@ -88,7 +93,8 @@ def update_profile(request):
         profile.picture = form.cleaned_data['picture']
         profile.save()
         
-        return redirect('users:update_profile')
+        url = reverse('users:detail', kwargs={'username': request.user.username})
+        return redirect(url)
 
     context = {
         'profile': profile,
@@ -97,3 +103,18 @@ def update_profile(request):
     }
     return render(request, 'users/update_profile.html', context)
 
+
+class UserDetailView(LoginRequiredMixin, DeleteView):
+    """
+    """
+    queryset = User.objects.all()
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
+    template_name='users/detail.html'
+    context_object_name = 'user'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        context['posts'] = Post.objects.filter(user=user).order_by('-created')
+        return context
