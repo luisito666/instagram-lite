@@ -16,5 +16,3 @@ class Post(models.Model):
     def __str__(self):
         return '%s by %s' % ( self.title, self.user.username )
     
-    def __repr__(self):
-        return '<Post Title: (%s) and User: (%s) >' % (self.title, self.user.username)

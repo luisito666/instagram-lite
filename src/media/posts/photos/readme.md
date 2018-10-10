@@ -1,1 +1,0 @@
-Folder de las fotos

@@ -6,15 +6,26 @@
 
 {% block container %}
 
-    {% if message %}
-        <p class="alert alert-danger"> {{ message }}</p>
-    {% endif %}
-    <form method="POST" action="{% url 'users:login' %}">
+    
+    {% if form.errors %}
+        <p class="alert alert-danger">
+            Your username and password didn't match. Please try again.
+        </p>
+    {% endif%}
+
+    <form method="POST" action="{% url "users:login" %}">
         {% csrf_token %}
 
-        {{ form.as_p }}
+        <div class="form-group">
+            <input class="form-control" type="text" placeholder="Username" name="username" />
+        </div>
 
-        <button class="btn btn-primary btn-block" type="submit"> Ingresar </button>
+        <div class="form-group">
+            <input class="form-control" type="password" placeholder="Password" name="password" />
+        </div>
+
+
+        <button class="btn btn-primary btn-block mt-2" type="submit">Sign in!</button>
 
     </form>
 
